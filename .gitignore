@@ -1,2 +1,8 @@
 .venv/
 db_migrations_common/
+web_app_core/db.sqlite3
+web_app_core/kanji_quiz_app/migrations/__pycache__/
+web_app_core/kanji_quiz_app/migrations/0001_initial.py
+web_app_core/kanji_quiz_app/migrations/0002_score.py
+web_app_core/kanji_quiz_app/migrations/0003_questionnaire_questionnaireresults.py
+web_app_core/kanji_quiz_app/__pycache__/
