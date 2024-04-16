@@ -1,0 +1,100 @@
+{% extends 'navbar.html' %}
+{% load static %}
+{% block content %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Add Kanji Definition</title>
+        {% load bootstrap5 %}
+        {% bootstrap_css %}
+        {% bootstrap_javascript %}
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="">
+        <style> 
+            .i-am-centered { 
+                margin: 0.5rem; 
+            }
+            .form-1 {
+                margin: 1rem;
+            }
+            .form-2 {
+                margin: 1rem;
+            }
+            .form-3 {
+                margin: 1rem;
+            }
+            .form-4 {
+                margin: 1rem;
+            }
+            .form-5 {
+                margin: 1rem;
+            }
+        </style>
+    </head>
+    <body>
+    <div style="padding:10px;">
+            <h1 style="font-family:Verdana;margin-bottom:0.5rem;">Kanji Definition To Add: </h1>
+    </div>
+    <div style="padding:10px;">
+        {% if messages %}
+            {% for message in messages %}
+                <div {% if message.tags %} class="alert alert-success" role="alert" {% endif %}>{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    </div>
+    <!--<form action="{% url 'insert_kanji_definition' %}" method="POST"> 
+        {% csrf_token %} 
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+            <span class="input-group-text" id="basic-addon1">Kanji Character: </span>
+            </div>
+            {{ form.kanji_character }} 
+        </div>
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+            <span class="input-group-text" id="basic-addon2">Hiragana Character: </span>
+            </div>
+            {{ form.hiragana_character }} 
+        </div>
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+            <span class="input-group-text" id="basic-addon3">Reading: </span>
+            </div>
+            {{ form.reading }} 
+        </div>
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+            <span class="input-group-text" id="basic-addon4">Meaning: </span>
+            </div>
+            {{ form.meaning }} 
+        </div>
+    </form>-->
+
+    <div class="i-am-centered">
+        <form action="{% url 'insert_kanji_definition' %}" method="POST"> 
+            {% csrf_token %} 
+            <div class="form-group form-1"> 
+                <label>Kanji Character: </label> 
+                {{ form.kanji_character }} 
+            </div> 
+            <div class="form-group form-2"> 
+                <label>Hiragana Character: </label> 
+                {{ form.hiragana_character }} 
+            </div> 
+            <div class="form-group form-3"> 
+                <label>Reading: </label> 
+                {{ form.reading }} 
+            </div> 
+            <div class="form-group form-4"> 
+                <label>Meaning: </label> 
+                {{ form.meaning }} 
+            </div> 
+            <input class="form-5" type="submit" value=Submit> 
+        </form>
+    </div>
+    </body>
+</html>
+{% endblock %}

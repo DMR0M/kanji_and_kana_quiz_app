@@ -1,0 +1,78 @@
+{% extends 'navbar.html' %}
+{% block content %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Kanji Quiz</title>
+        {% load bootstrap5 %}
+        {% bootstrap_css %}
+        {% bootstrap_javascript %}
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="">
+    </head>
+    <body>
+        
+        <h1 style="font-family: monospace, Monaco;padding:10px;">Define the Following Kanji Characters: </h1>
+        <!--
+        <ul class="list-group list-group-flush">
+            
+            {% for kanji in randomize_kanji_list %}
+                <li class="list-group-item">{{kanji}}</li>
+            {% endfor %}
+        </ul>
+        -->
+        <!-- Get 10 random kanji characters for the quiz page -->
+        <form method="POST" action="{% url 'submit_answers' %}">
+            <div style="margin-top:2rem;" class="container">
+                <div class="row">
+                    <div class="col-sm">
+                        <h4>Kanji: </h4>
+                    </div>
+                    <div class="col-sm">
+                        <h4>Reading: </h4>
+                    </div>
+                    <div class="col-sm">
+                        <h4>Meaning: </h4>
+                    </div>
+                </div>
+                {% for kanji in randomize_kanji_list %}
+                    {% csrf_token %} 
+                    <div style="margin-top:0.5rem;" class="row">
+                        <div class="col-sm">
+                            <input type="text" readonly style="font-family:Lucida Console, Times New Roman;font-weight:bold;" 
+                            class="form-control" name="kanji_questions_{{forloop.counter}}" value={{kanji}}>
+                        </div>
+                        <div class="col-sm">
+                            <input type="text" name="reading_answer_{{forloop.counter}}" class="form-control">
+                        </div>
+                        <div class="col-sm">
+                            <input type="text" name="meaning_answer_{{forloop.counter}}" class="form-control">
+                        </div>
+                    </div>
+                {% endfor %}
+                <div class="col-sm">
+                    <button style="margin-top:4rem;" type="submit" class="btn btn-primary btn-sm">Submit Answers</button>
+                </div>
+            </div>
+        </form> 
+        <script>
+        </script>
+        <!--
+        <form method="POST" action="/submit">
+            {% for kanji in randomize_kanji_list %}
+                <div class="input-group">
+                    <span style="font-family:Lucida Console, Times New Roman;font-weight:bold;" class="input-group-text">{{kanji}}</span>
+                    <input type="text" aria-label="First name" class="form-control">
+                    <input type="text" aria-label="Last name" class="form-control">
+                </div>
+            {% endfor %}
+            <div>
+            <button type="submit" class="btn btn-primary btn-sm">Submit Answers</button>
+        </form>
+        -->
+    </body>
+</html>
+{% endblock %}
