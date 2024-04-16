@@ -24,6 +24,7 @@ class Score(models.Model):
 
 
 class Questionnaire(models.Model):
+    quiz_taker_name = models.CharField(max_length=200)
     quiz_name = models.CharField(max_length=100, default="Business Kanji Quiz")
     date_answered = models.DateField(default=timezone.now)
     

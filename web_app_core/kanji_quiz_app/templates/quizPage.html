@@ -25,8 +25,17 @@
         </ul>
         -->
         <!-- Get 10 random kanji characters for the quiz page -->
+
         <form method="POST" action="{% url 'submit_answers' %}">
             <div style="margin-top:2rem;" class="container">
+                <div class="row">
+                    <div class="col-sm">
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon1">Name: </span>
+                            <input type="text" name="name_value" class="form-control" placeholder="Name of the quiz taker" aria-label="Username" aria-describedby="basic-addon1" required>
+                        </div>
+                    </div>
+                </div>
                 <div class="row">
                     <div class="col-sm">
                         <h4>Kanji: </h4>

@@ -124,6 +124,8 @@ def answers_submit_view(request):
     kanji_questions = []
     
     if request.method == "POST":
+        quiz_taker_name = request.POST.get("name_value")
+        
         for key, value in request.POST.items():
             if key.startswith("reading_answer_"):
                 reading_answers.append(value)
@@ -131,7 +133,7 @@ def answers_submit_view(request):
                 meaning_answers.append(value)
             elif key.startswith("kanji_questions_"):
                 kanji_questions.append(value)
-
+                
         # Get the total score
         total_score = util_get_quiz_score(reading_answers, meaning_answers, kanji_questions)
         # Get the total question count
@@ -141,7 +143,9 @@ def answers_submit_view(request):
         # Get the correct meaning answers
         correct_meaning_answers = util_get_correct_quiz_answers(kanji_questions, "meaning")
         
-        questionnaire = Questionnaire.objects.create()
+        questionnaire = Questionnaire.objects.create(
+            quiz_taker_name=quiz_taker_name.title(),
+        )
         
         question_and_answer_lookup = list(zip(correct_reading_answers, reading_answers, correct_meaning_answers, meaning_answers, kanji_questions))
             
