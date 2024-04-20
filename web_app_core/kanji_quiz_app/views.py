@@ -5,8 +5,10 @@ from django.contrib import messages
 from .models import (
     KanjiQuiz, 
     HiraganaQuiz,
+    KatakanaQuiz,
     Score, 
-    Questionnaire, QuestionnaireResults,
+    Questionnaire, 
+    QuestionnaireResults,
 )
 from .forms import AddKanjiDefinitionForm
 from .utils import (
@@ -34,6 +36,13 @@ def get_hiragana_words(request):
     return render(request, "listHiragana.html", context)
 
 
+# Katakana Master List Definition Page
+def get_katakana_words(request):
+    katakana_list = KatakanaQuiz.objects.order_by('id').all()
+    context = {"katakana_list": katakana_list}
+    return render(request, "listKatakana.html", context)
+
+
 # Get Kanji Characters for Quiz Page
 def get_kanji_quiz_data(request):
     # Get 10 kanji characters from the list and shuffle the order of the characters
@@ -56,13 +65,23 @@ def get_hiragana_quiz_data(request):
     return render(request, "hiraganaQuizPage.html", context)
 
 
+# Get Katakana Characters for Quiz Page
+def get_katakana_quiz_data(request):
+    katakana_list = util_generate_quiz_data("katakana")
+    
+    context = {"randomize_katakana_list": katakana_list}
+    
+    return render(request, "katakanaQuizPage.html", context)
+
+
+# Add data to Kanji Definitions Table
 def add_quiz_view(request):
     context = {}
     context["form"] = AddKanjiDefinitionForm()
     return render(request, "addKanji.html", context)
 
 
-# Handle Form Submission of Answers in Quiz Page
+# Handle Form Submission of Answers in Kanji Quiz Page
 def answers_submit_view(request):
     reading_answers = []
     meaning_answers = []
@@ -113,7 +132,7 @@ def answers_submit_view(request):
         return HttpResponse('Method not allowed')
     
 
-# Handle Form Submission of Answers in Quiz Page
+# Handle Form Submission of Answers in Hiragana Quiz Page
 def hiragana_answers_submit_view(request):
     reading_answers = []
     meaning_answers = []
@@ -167,12 +186,60 @@ def hiragana_answers_submit_view(request):
     
     else:
         return HttpResponse('Method not allowed')
-    
 
-def add_quiz_view(request):
-    context = {}
-    context["form"] = AddKanjiDefinitionForm()
-    return render(request, "addKanji.html", context)
+
+# Handle Form Submission of Answers in Katakana Quiz Page
+def katakana_answers_submit_view(request):
+    reading_answers = []
+    meaning_answers = []
+    katakana_questions = []
+    
+    if request.method == "POST":
+        quiz_taker_name = request.POST.get("name_value")
+        
+        for key, value in request.POST.items():
+            if key.startswith("reading_answer_"):
+                reading_answers.append(value)
+            elif key.startswith("meaning_answer_"):
+                meaning_answers.append(value)
+            elif key.startswith("katakana_questions_"):
+                katakana_questions.append(value)
+                
+        # Get the total score
+        total_score = util_get_quiz_score("Katakana", reading_answers, meaning_answers, katakana_questions)
+        # Get the total question count
+        question_count = len(reading_answers) + len(meaning_answers)
+        # Get the correct reading answers
+        correct_reading_answers = util_get_correct_quiz_answers("Katakana", katakana_questions, "reading")
+        # Get the correct meaning answers
+        correct_meaning_answers = util_get_correct_quiz_answers("Katakana", katakana_questions, "meaning")
+        
+        questionnaire = Questionnaire.objects.create(
+            quiz_name="Katakana Quiz",
+            quiz_taker_name=quiz_taker_name,
+        )
+        
+        question_and_answer_lookup = list(zip(correct_reading_answers, reading_answers, correct_meaning_answers, meaning_answers, katakana_questions))
+        
+        print(question_and_answer_lookup)
+        
+        for c_reading, reading, c_meaning, meaning, katakana_character in question_and_answer_lookup:
+            QuestionnaireResults.objects.create(
+                kanji_character=katakana_character.casefold(),
+                correct_reading_answer=c_reading.casefold(),
+                reading_answer=reading.casefold(),
+                correct_meaning_answer=c_meaning.casefold(),
+                meaning_answer=meaning.casefold(),
+                questionnaire=questionnaire,
+            )
+        
+        Score.objects.create(total_score=total_score, question_count=question_count)
+        
+        
+        return HttpResponseRedirect('/your_score_katakana_quiz')
+    
+    else:
+        return HttpResponse('Method not allowed')
     
 
 # Display score page with the user's score based on the quiz taken
@@ -187,6 +254,13 @@ def hiragana_score_view(request):
     score_list = Score.objects.last()
     context = {"score_list": score_list}
     return render(request, "hiraganaScorePage.html", context)
+
+
+# Display score page with the user's score based on the quiz taken
+def katakana_score_view(request):
+    score_list = Score.objects.last()
+    context = {"score_list": score_list}
+    return render(request, "katakanaScorePage.html", context)
 
 
 # Process Inserting Data to Kanji Definitions Table

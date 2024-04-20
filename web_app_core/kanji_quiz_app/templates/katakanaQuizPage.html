@@ -5,7 +5,7 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title>Hiragana Quiz</title>
+        <title>Katakana Quiz</title>
         {% load bootstrap5 %}
         {% bootstrap_css %}
         {% bootstrap_javascript %}
@@ -14,8 +14,8 @@
         <link rel="stylesheet" href="">
     </head>
     <body>
-        <h1 style="font-family: monospace, Monaco;padding:10px;">Define the Following Hiragana Characters: </h1>
-        <form method="POST" action="{% url 'hiragana_submit_answers' %}">
+        <h1 style="font-family: monospace, Monaco;padding:10px;">Define the Following Katakana Characters: </h1>
+        <form method="POST" action="{% url 'katakana_submit_answers' %}">
             <div style="margin-top:2rem;" class="container">
                 <div class="row">
                     <div class="col-sm">
@@ -27,7 +27,7 @@
                 </div>
                 <div class="row">
                     <div class="col-sm">
-                        <h4>Hiragana: </h4>
+                        <h4>Katakana: </h4>
                     </div>
                     <div class="col-sm">
                         <h4>Romaji Reading: </h4>
@@ -36,12 +36,12 @@
                         <h4>Meaning: </h4>
                     </div>
                 </div>
-                {% for hiragana in randomize_hiragana_list %}
+                {% for katakana in randomize_katakana_list %}
                     {% csrf_token %} 
                     <div style="margin-top:0.5rem;" class="row">
                         <div class="col-sm">
                             <input type="text" readonly style="font-family:Lucida Console, Times New Roman;font-weight:bold;" 
-                            class="form-control" name="hiragana_questions_{{forloop.counter}}" value={{hiragana}}>
+                            class="form-control" name="katakana_questions_{{forloop.counter}}" value={{katakana}}>
                         </div>
                         <div class="col-sm">
                             <input type="text" name="reading_answer_{{forloop.counter}}" class="form-control">

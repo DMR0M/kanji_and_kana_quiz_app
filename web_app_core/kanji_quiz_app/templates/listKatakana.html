@@ -1,0 +1,42 @@
+{% extends 'navbar.html' %}
+{% load static %}
+{% block content %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Katakana Definition Table</title>
+        {% load bootstrap5 %}
+        {% bootstrap_css %}
+        {% bootstrap_javascript %}
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="{% static 'style.css' %}">
+    </head>
+    <body>
+         <!-- Table for Kiragana Definition -->
+        <table class="table table-striped">
+            <thead class="thead-dark">
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Katakana</th>
+                <th scope="col">Reading</th>
+                <th scope="col">Meaning</th>
+              </tr>
+            </thead>
+            <tbody>
+            <!-- Loop each data fetched from the database -->
+            {% for katakana in katakana_list %}
+              <tr>
+                <th scope="row">{{katakana.id}}</th>
+                <td>{{katakana.katakana_character}}</td>
+                <td>{{katakana.reading}}</td>
+                <td>{{katakana.meaning}}</td>
+              </tr>
+            {% endfor %}
+            </tbody>
+          </table>
+    </body>
+</html>
+{% endblock %}
