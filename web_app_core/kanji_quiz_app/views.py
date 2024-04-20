@@ -1,11 +1,19 @@
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib import messages
-from random import shuffle, sample
 
-from .models import KanjiQuiz, Score, Questionnaire, QuestionnaireResults
+from .models import (
+    KanjiQuiz, 
+    HiraganaQuiz,
+    Score, 
+    Questionnaire, QuestionnaireResults,
+)
 from .forms import AddKanjiDefinitionForm
-
+from .utils import (
+    util_generate_quiz_data, 
+    util_get_correct_quiz_answers,
+    util_get_quiz_score,
+)
 
 # Landing Page
 def home(request):
@@ -19,89 +27,17 @@ def get_kanji_words(request):
     return render(request, "listKanji.html", context)
 
 
-# Convert all words to lowecase
-def util_convert_to_lowercase(*args) -> list[str]:
-    return list(map(lambda x: x.casefold(), args))
-
-
-# Removes character ; and ,
-def util_remove_characters(*args) -> list[str]:
-    return list(map(lambda x: x.replace(";", "").replace(",",""), args))
-
-
-# Generates 10 random kanji words from database
-def util_generate_quiz_data(size=10) -> list[str]:
-    kanji_list: list[tuple] = KanjiQuiz.objects.all().values_list("kanji_character", flat=True)
-    kanji_list = sample(list(kanji_list), size)
-    
-    shuffle(kanji_list)
-    
-    return kanji_list
-
-
-# Get the correct reading and meaning of a given kanji_characters_list
-def util_get_correct_quiz_answers(kanji_questions, answer_type) -> list[str]:
-    answers = []
-    
-    # Return an empty list if inputs are not of the expected types
-    if not isinstance(kanji_questions, list) or not isinstance(answer_type, str):
-        return answers  
-    
-    if "reading" == answer_type.casefold():
-        for kanji in kanji_questions:
-            result_set = KanjiQuiz.objects.filter(kanji_character=kanji)
-
-            answers.append(result_set.first().reading)
-            
-    elif "meaning" == answer_type.casefold():
-        for kanji in kanji_questions:
-            result_set = KanjiQuiz.objects.filter(kanji_character=kanji)
-            
-            answers.append(result_set.first().meaning)
-    
-    return answers
-
-
-# Generates total score based on quiz answers
-def util_get_quiz_score(reading_answers, meaning_answers, kanji_questions) -> int:
-    reading_answers = list(map(lambda x: x.casefold(), reading_answers))
-    meaning_answers = list(map(lambda x: x.casefold(), meaning_answers))
-    
-    total_score = 0
-    
-    correct_answers_reading: list[tuple] = KanjiQuiz.objects.all().values_list(
-        "kanji_character", "reading"
-    )
-    correct_answers_meaning: list[tuple] = KanjiQuiz.objects.all().values_list(
-        "kanji_character", "meaning"
-    )
-    
-    reading_lookup = dict(correct_answers_reading)
-    meaning_lookup = dict(correct_answers_meaning)
-    
-    for meaning in meaning_lookup:
-        meaning_lookup[meaning] = list(map(lambda x: x.replace(" ", ""), meaning_lookup[meaning].split(";")))
-        
-    # print(meaning_lookup)
-    
-    for data in zip(kanji_questions, reading_answers, meaning_answers):
-            kanji = data[0]         # kanji_questions_value
-            read_ans = data[1]      # reading_answers_value
-            mean_ans = data[2]      # meaning_answer_value
-            
-            if reading_lookup[kanji] == read_ans.replace(" ", ""):
-                total_score += 1
-                
-            if mean_ans.replace(" ", "") in meaning_lookup[kanji]:
-                total_score += 1
-    
-    return total_score
+# Hiragana Master List Definition Page
+def get_hiragana_words(request):
+    hiragana_list = HiraganaQuiz.objects.order_by('id').all()
+    context = {"hiragana_list": hiragana_list}
+    return render(request, "listHiragana.html", context)
 
 
 # Get Kanji Characters for Quiz Page
-def get_quiz_data(request):
+def get_kanji_quiz_data(request):
     # Get 10 kanji characters from the list and shuffle the order of the characters
-    kanji_list = util_generate_quiz_data()
+    kanji_list = util_generate_quiz_data("kanji")
     
     context = {"randomize_kanji_list": kanji_list}
     
@@ -109,6 +45,15 @@ def get_quiz_data(request):
     render(request, "quizResults.html", context)
     
     return render(request, "quizPage.html", context)
+
+
+# Get Hiragana Characters for Quiz Page
+def get_hiragana_quiz_data(request):
+    hiragana_list = util_generate_quiz_data("hiragana")
+    
+    context = {"randomize_hiragana_list": hiragana_list}
+    
+    return render(request, "hiraganaQuizPage.html", context)
 
 
 def add_quiz_view(request):
@@ -135,16 +80,16 @@ def answers_submit_view(request):
                 kanji_questions.append(value)
                 
         # Get the total score
-        total_score = util_get_quiz_score(reading_answers, meaning_answers, kanji_questions)
+        total_score = util_get_quiz_score("Kanji", reading_answers, meaning_answers, kanji_questions)
         # Get the total question count
         question_count = len(reading_answers) + len(meaning_answers)
         # Get the correct reading answers
-        correct_reading_answers = util_get_correct_quiz_answers(kanji_questions, "reading")
+        correct_reading_answers = util_get_correct_quiz_answers("Kanji", kanji_questions, "reading")
         # Get the correct meaning answers
-        correct_meaning_answers = util_get_correct_quiz_answers(kanji_questions, "meaning")
+        correct_meaning_answers = util_get_correct_quiz_answers("Kanji", kanji_questions, "meaning")
         
         questionnaire = Questionnaire.objects.create(
-            quiz_taker_name=quiz_taker_name.title(),
+            quiz_taker_name=quiz_taker_name,
         )
         
         question_and_answer_lookup = list(zip(correct_reading_answers, reading_answers, correct_meaning_answers, meaning_answers, kanji_questions))
@@ -168,11 +113,80 @@ def answers_submit_view(request):
         return HttpResponse('Method not allowed')
     
 
+# Handle Form Submission of Answers in Quiz Page
+def hiragana_answers_submit_view(request):
+    reading_answers = []
+    meaning_answers = []
+    hiragana_questions = []
+    
+    if request.method == "POST":
+        quiz_taker_name = request.POST.get("name_value")
+        
+        for key, value in request.POST.items():
+            if key.startswith("reading_answer_"):
+                reading_answers.append(value)
+            elif key.startswith("meaning_answer_"):
+                meaning_answers.append(value)
+            elif key.startswith("hiragana_questions_"):
+                hiragana_questions.append(value)
+                
+        # Get the total score
+        total_score = util_get_quiz_score("Hiragana", reading_answers, meaning_answers, hiragana_questions)
+        # Get the total question count
+        question_count = len(reading_answers) + len(meaning_answers)
+        # Get the correct reading answers
+        correct_reading_answers = util_get_correct_quiz_answers("Hiragana", hiragana_questions, "reading")
+        print(correct_reading_answers)
+        # Get the correct meaning answers
+        correct_meaning_answers = util_get_correct_quiz_answers("Hiragana", hiragana_questions, "meaning")
+        print(correct_meaning_answers)
+        
+        questionnaire = Questionnaire.objects.create(
+            quiz_name="Hiragana Quiz",
+            quiz_taker_name=quiz_taker_name,
+        )
+        
+        question_and_answer_lookup = list(zip(correct_reading_answers, reading_answers, correct_meaning_answers, meaning_answers, hiragana_questions))
+        
+        print(question_and_answer_lookup)
+        
+        for c_reading, reading, c_meaning, meaning, kanji_character in question_and_answer_lookup:
+            QuestionnaireResults.objects.create(
+                kanji_character=kanji_character.casefold(),
+                correct_reading_answer=c_reading.casefold(),
+                reading_answer=reading.casefold(),
+                correct_meaning_answer=c_meaning.casefold(),
+                meaning_answer=meaning.casefold(),
+                questionnaire=questionnaire,
+            )
+        
+        Score.objects.create(total_score=total_score, question_count=question_count)
+        
+        
+        return HttpResponseRedirect('/your_score_hiragana_quiz')
+    
+    else:
+        return HttpResponse('Method not allowed')
+    
+
+def add_quiz_view(request):
+    context = {}
+    context["form"] = AddKanjiDefinitionForm()
+    return render(request, "addKanji.html", context)
+    
+
 # Display score page with the user's score based on the quiz taken
 def score_view(request):
     score_list = Score.objects.last()
     context = {"score_list": score_list}
     return render(request, "scorePage.html", context)
+
+
+# Display score page with the user's score based on the quiz taken
+def hiragana_score_view(request):
+    score_list = Score.objects.last()
+    context = {"score_list": score_list}
+    return render(request, "hiraganaScorePage.html", context)
 
 
 # Process Inserting Data to Kanji Definitions Table
@@ -232,5 +246,4 @@ def quiz_results_view(request):
         return render(request, "quizResults.html", context)
     else:
         return HttpResponse('Method not allowed')
-    
     

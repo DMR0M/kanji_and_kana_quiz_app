@@ -1,0 +1,42 @@
+{% extends 'navbar.html' %}
+{% load static %}
+{% block content %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Hiragana Definition Table</title>
+        {% load bootstrap5 %}
+        {% bootstrap_css %}
+        {% bootstrap_javascript %}
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="{% static 'style.css' %}">
+    </head>
+    <body>
+         <!-- Table for Hiragana Definition -->
+        <table class="table table-striped">
+            <thead class="thead-dark">
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Hiragana</th>
+                <th scope="col">Reading</th>
+                <th scope="col">Meaning</th>
+              </tr>
+            </thead>
+            <tbody>
+            <!-- Loop each data fetched from the database -->
+            {% for hiragana in hiragana_list %}
+              <tr>
+                <th scope="row">{{hiragana.id}}</th>
+                <td>{{hiragana.hiragana_character}}</td>
+                <td>{{hiragana.reading}}</td>
+                <td>{{hiragana.meaning}}</td>
+              </tr>
+            {% endfor %}
+            </tbody>
+          </table>
+    </body>
+</html>
+{% endblock %}

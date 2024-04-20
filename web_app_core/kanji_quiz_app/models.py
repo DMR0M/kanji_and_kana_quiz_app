@@ -12,6 +12,16 @@ class KanjiQuiz(models.Model):
     def __str__(self):
         return f"Kanji Character: {self.kanji_character}"
     
+    
+# Hiragana Definition Model
+class HiraganaQuiz(models.Model):
+    hiragana_character = models.CharField(max_length=100)
+    reading = models.CharField(max_length=200)
+    meaning = models.CharField(max_length=200)
+    
+    def __str__(self):
+        return f"Hiragana Character: {self.hiragana_character}"
+
 
 # Scores Model
 class Score(models.Model):
