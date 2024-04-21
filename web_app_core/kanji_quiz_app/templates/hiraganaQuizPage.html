@@ -44,10 +44,10 @@
                             class="form-control" name="hiragana_questions_{{forloop.counter}}" value={{hiragana}}>
                         </div>
                         <div class="col-sm">
-                            <input type="text" name="reading_answer_{{forloop.counter}}" class="form-control">
+                            <input type="text" name="reading_answer_{{forloop.counter}}" class="form-control" required>
                         </div>
                         <div class="col-sm">
-                            <input type="text" name="meaning_answer_{{forloop.counter}}" class="form-control">
+                            <input type="text" name="meaning_answer_{{forloop.counter}}" class="form-control" required>
                         </div>
                     </div>
                 {% endfor %}
