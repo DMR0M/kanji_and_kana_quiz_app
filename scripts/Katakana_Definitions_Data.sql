@@ -29,7 +29,7 @@ VALUES
 	('カラオケ', 'karaoke', 'karaoke'),
 	('リゾート', 'rezoto', 'resort'),
 	('バスケットボール', 'basukettoboru', 'basketball'),
-	('ゴルフ', 'gorufu', 'gold'),
+	('ゴルフ', 'gorufu', 'golf'),
 	('サッカー', 'sakka', 'soccer'),
 	('テニス', 'tenisu', 'tennis'),
 	('バドミントン', 'badominton', 'badminton'),
