@@ -63,4 +63,10 @@ class QuestionnaireResults(models.Model):
     
     def __str__(self):
         return f"Questions and Answers {str(self.date_answered)}"
-    
+
+
+class QuizSettings(models.Model):
+    quiz_hiragana_question_count = models.IntegerField()
+    quiz_katakana_question_count = models.IntegerField()
+    quiz_kanji_question_count = models.IntegerField()
+    date_modified = models.DateField(default=timezone.now)

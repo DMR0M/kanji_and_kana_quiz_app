@@ -14,18 +14,8 @@
         <link rel="stylesheet" href="">
     </head>
     <body>
-        
         <h1 style="font-family: monospace, Monaco;padding:10px;">Define the Following Kanji Characters: </h1>
-        <!--
-        <ul class="list-group list-group-flush">
-            
-            {% for kanji in randomize_kanji_list %}
-                <li class="list-group-item">{{kanji}}</li>
-            {% endfor %}
-        </ul>
-        -->
         <!-- Get 10 random kanji characters for the quiz page -->
-
         <form method="POST" action="{% url 'submit_answers' %}">
             <div style="margin-top:2rem;" class="container">
                 <div class="row">
@@ -68,21 +58,8 @@
             </div>
         </form> 
         <script>
+            {% bootstrap_javascript %}
         </script>
-        <!--
-        <form method="POST" action="/submit">
-            {% for kanji in randomize_kanji_list %}
-                <div class="input-group">
-                    <span style="font-family:Lucida Console, Times New Roman;font-weight:bold;" class="input-group-text">{{kanji}}</span>
-                    <input type="text" aria-label="First name" class="form-control">
-                    <input type="text" aria-label="Last name" class="form-control">
-                </div>
-            {% endfor %}
-            <div>
-            <button type="submit" class="btn btn-primary btn-sm">Submit Answers</button>
-        </form>
-        -->
-        <script></script>
     </body>
 </html>
 {% endblock %}

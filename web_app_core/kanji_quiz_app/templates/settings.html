@@ -1,0 +1,123 @@
+{% extends 'navbar.html' %} {% block content %}
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    {% load bootstrap5 %} {% bootstrap_css %} {% bootstrap_javascript %}
+    <title>Quiz Settings</title>
+    <meta name="description" content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="" />
+  </head>
+  <body>
+    {% if message %}
+        <div class="alert alert-success" role="alert">
+            {{ message }}
+        </div>
+    {% endif %}
+    <div style="padding:10px; position-absolute top-0 start-50 translate-middle-x">
+        <h1 style="font-family: Verdana; margin-bottom: 2rem">
+            Quiz Settings
+        </h1>
+    </div>
+    <form method="POST" action="{% url 'quiz_settings' %}">
+        {% csrf_token %}
+        <div class="container">
+            <div class="row">
+            <p>
+                <button
+                class="btn btn-dark"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#collapseExample1"
+                aria-expanded="false"
+                aria-controls="collapseExample"
+                >
+                Hiragana Quiz Word Count
+                </button>
+                <div class="collapse" id="collapseExample1">
+                    <div class="card card-body">
+                        <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
+                            <input type="radio" class="btn-check" name="hiragana-word-count" id="btnradio1" value="10" autocomplete="off" checked>
+                            <label class="btn btn-outline-success" for="btnradio1">10</label>
+
+                            <input type="radio" class="btn-check" name="hiragana-word-count" id="btnradio2" value="20" autocomplete="off">
+                            <label class="btn btn-outline-warning" for="btnradio2">20</label>
+
+                            <input type="radio" class="btn-check" name="hiragana-word-count" id="btnradio3" value="30" autocomplete="off">
+                            <label class="btn btn-outline-danger" for="btnradio3">30</label>
+                        </div>
+                    </div>
+                </div>
+            </p>
+            </div>
+            <div class="row">
+            <p>
+                <button
+                class="btn btn-dark"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#collapseExample2"
+                aria-expanded="false"
+                aria-controls="collapseExample"
+                >
+                Katakana Quiz Word Count
+                </button>
+                <div class="collapse" id="collapseExample2">
+                    <div class="card card-body">
+                        <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
+                            <input type="radio" class="btn-check" name="katakana-word-count" id="btnradio4" value="10" autocomplete="off" checked>
+                            <label class="btn btn-outline-success" for="btnradio4">10</label>
+
+                            <input type="radio" class="btn-check" name="katakana-word-count" id="btnradio5" value="20" autocomplete="off">
+                            <label class="btn btn-outline-warning" for="btnradio5">20</label>
+
+                            <input type="radio" class="btn-check" name="katakana-word-count" id="btnradio6" value="30" autocomplete="off">
+                            <label class="btn btn-outline-danger" for="btnradio6">30</label>
+                        </div>
+                    </div>
+                </div>
+            </p>
+            </div>
+            <div class="row">
+            <p>
+                <button
+                class="btn btn-dark"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#collapseExample3"
+                aria-expanded="false"
+                aria-controls="collapseExample"
+                >
+                Kanji Quiz Word Count
+                </button>
+                <div class="collapse" id="collapseExample3">
+                    <div class="card card-body">
+                        <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
+                            <input type="radio" class="btn-check" name="kanji-word-count" id="btnradio7" value="5" autocomplete="off" checked>
+                            <label class="btn btn-outline-success" for="btnradio7">5</label>
+
+                            <input type="radio" class="btn-check" name="kanji-word-count" id="btnradio8" value="10" autocomplete="off">
+                            <label class="btn btn-outline-warning" for="btnradio8">10</label>
+
+                            <input type="radio" class="btn-check" name="kanji-word-count" id="btnradio9" value="20" autocomplete="off">
+                            <label class="btn btn-outline-danger" for="btnradio9">20</label>
+                        </div>
+                    </div>
+                </div>
+            </p>
+            </div>
+            <div class="row">
+                <div class="col-sm">
+                    <button style="margin-top:4rem;" type="submit" class="btn btn-outline-dark">Save</button>
+                </div>
+            </div>
+        </div>
+    </form>
+  </body>
+  <script>
+    {% bootstrap_javascript %}
+  </script>
+</html>
+{% endblock content %}

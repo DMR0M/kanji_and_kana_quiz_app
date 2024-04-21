@@ -9,6 +9,7 @@ from .models import (
     Score, 
     Questionnaire, 
     QuestionnaireResults,
+    QuizSettings,
 )
 from .forms import AddKanjiDefinitionForm
 from .utils import (
@@ -45,8 +46,12 @@ def get_katakana_words(request):
 
 # Get Kanji Characters for Quiz Page
 def get_kanji_quiz_data(request):
+    # Get the number of question based on QuizSettings model
+    latest_record = QuizSettings.objects.order_by('-id').first()
+    question_count = latest_record.quiz_kanji_question_count
+    
     # Get 10 kanji characters from the list and shuffle the order of the characters
-    kanji_list = util_generate_quiz_data("kanji")
+    kanji_list = util_generate_quiz_data("kanji", size=question_count)
     
     context = {"randomize_kanji_list": kanji_list}
     
@@ -58,7 +63,11 @@ def get_kanji_quiz_data(request):
 
 # Get Hiragana Characters for Quiz Page
 def get_hiragana_quiz_data(request):
-    hiragana_list = util_generate_quiz_data("hiragana")
+    # Get the number of question based on QuizSettings model
+    latest_record = QuizSettings.objects.order_by('-id').first()
+    question_count = latest_record.quiz_hiragana_question_count
+    
+    hiragana_list = util_generate_quiz_data("hiragana", size=question_count)
     
     context = {"randomize_hiragana_list": hiragana_list}
     
@@ -67,7 +76,12 @@ def get_hiragana_quiz_data(request):
 
 # Get Katakana Characters for Quiz Page
 def get_katakana_quiz_data(request):
-    katakana_list = util_generate_quiz_data("katakana")
+    # Get the number of question based on QuizSettings model
+    latest_record = QuizSettings.objects.order_by('-id').first()
+    question_count = latest_record.quiz_katakana_question_count
+    print(question_count)
+    
+    katakana_list = util_generate_quiz_data("katakana", size=question_count)
     
     context = {"randomize_katakana_list": katakana_list}
     
@@ -320,4 +334,22 @@ def quiz_results_view(request):
         return render(request, "quizResults.html", context)
     else:
         return HttpResponse('Method not allowed')
+
+
+def quiz_settings_view(request):
+    context = {}
     
+    if request.method == "POST":
+        hiragana_question_count = request.POST.get("hiragana-word-count")
+        katakana_question_count = request.POST.get("katakana-word-count")
+        kanji_question_count = request.POST.get("kanji-word-count")
+        
+        QuizSettings.objects.create(
+            quiz_hiragana_question_count=int(hiragana_question_count),
+            quiz_katakana_question_count=int(katakana_question_count),
+            quiz_kanji_question_count=int(kanji_question_count),
+        )
+        
+        context = {"message": "Successfully updated word count in quizzes!"}
+    
+    return render(request, "settings.html", context)
