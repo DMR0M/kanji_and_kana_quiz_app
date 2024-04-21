@@ -117,9 +117,9 @@ def answers_submit_view(request):
             QuestionnaireResults.objects.create(
                 kanji_character=kanji_character.casefold(),
                 correct_reading_answer=c_reading.casefold(),
-                reading_answer=reading.casefold(),
+                reading_answer=reading.casefold().strip(),
                 correct_meaning_answer=c_meaning.casefold(),
-                meaning_answer=meaning.casefold(),
+                meaning_answer=meaning.casefold().strip(),
                 questionnaire=questionnaire,
             )
         
@@ -173,9 +173,9 @@ def hiragana_answers_submit_view(request):
             QuestionnaireResults.objects.create(
                 kanji_character=kanji_character.casefold(),
                 correct_reading_answer=c_reading.casefold(),
-                reading_answer=reading.casefold(),
+                reading_answer=reading.casefold().strip(),
                 correct_meaning_answer=c_meaning.casefold(),
-                meaning_answer=meaning.casefold(),
+                meaning_answer=meaning.casefold().strip(),
                 questionnaire=questionnaire,
             )
         
@@ -227,9 +227,9 @@ def katakana_answers_submit_view(request):
             QuestionnaireResults.objects.create(
                 kanji_character=katakana_character.casefold(),
                 correct_reading_answer=c_reading.casefold(),
-                reading_answer=reading.casefold(),
+                reading_answer=reading.casefold().strip(),
                 correct_meaning_answer=c_meaning.casefold(),
-                meaning_answer=meaning.casefold(),
+                meaning_answer=meaning.casefold().strip(),
                 questionnaire=questionnaire,
             )
         
@@ -312,7 +312,7 @@ def quiz_results_view(request):
     if latest_questionnaire:
         # Get the latest questionnaire results
         latest_questionnaire_results = latest_questionnaire.questionnaireresults_set.all().order_by("id")
-
+        
         context = {
             "questionnaire_results": latest_questionnaire_results,
         }
