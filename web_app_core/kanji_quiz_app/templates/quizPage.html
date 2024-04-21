@@ -45,10 +45,10 @@
                             class="form-control" name="kanji_questions_{{forloop.counter}}" value={{kanji}}>
                         </div>
                         <div class="col-sm">
-                            <input type="text" name="reading_answer_{{forloop.counter}}" class="form-control">
+                            <input type="text" name="reading_answer_{{forloop.counter}}" class="form-control" required>
                         </div>
                         <div class="col-sm">
-                            <input type="text" name="meaning_answer_{{forloop.counter}}" class="form-control">
+                            <input type="text" name="meaning_answer_{{forloop.counter}}" class="form-control" required>
                         </div>
                     </div>
                 {% endfor %}
