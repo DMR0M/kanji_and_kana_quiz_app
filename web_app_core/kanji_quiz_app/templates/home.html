@@ -1,28 +1,130 @@
-{% extends 'navbar.html' %}
-{% load static %}
-{% block content %}
+{% extends 'navbar.html' %} {% load static %} {% block content %}
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        {% load bootstrap5 %}
-        {% bootstrap_css %}
-        {% bootstrap_javascript %}
-        <title></title>
-        <meta name="description" content="">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="{% static 'style.css' %}">
-    </head>
-    <body>
-        <div style="padding:10px; position-absolute top-0 start-50 translate-middle-x">
-            <h1 style="font-family:Verdana;margin-bottom:0.5rem;">Welcome to the Japanese Vocabulary Quiz Portal</h1>
-        </div>
-        <div style="padding:10px; position-absolute top-0 start-50 translate-middle-x">
-            <h4 style="font-family:Lucida Console;">Go to <span style="font-weight:bold;">Kanji Definitions Table</span> to review the kanji words</h4>
-            <h4 style="font-family:Lucida Console;">Go to <span style="font-weight:bold;">Hiragana Definitions Table</span> to review the hiragana words</h4>
-            <h4 style="font-family:Lucida Console;">Go to <span style="font-weight:bold;">Katakana Definitions Table</span> to review the katakana words</h4>
-        </div>
-    </body>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    {% load bootstrap5 %} {% bootstrap_css %} {% bootstrap_javascript %}
+    <title></title>
+    <meta name="description" content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{% static 'css/style.css' %}"
+    />
+  </head>
+  <style>
+    .image-group {
+      margin: 2rem;
+      width: 5rem;
+    }
+  </style>
+  <body>
+    <div
+      class="container text-center"
+      style="padding:10px; position-absolute top-0 start-50 translate-middle-x"
+    >
+      <div
+        style="padding:10px; position-absolute top-0 start-50 translate-middle-x"
+      >
+        <h1 style="font-family: Verdana; margin-bottom: 0.5rem">
+          Welcome to the Japanese Vocabulary Quiz Portal
+        </h1>
+      </div>
+      <div class="row mb-3">
+        <span>
+          <img
+            src="{% static 'images/hiragana_yo.png' %}"
+            alt="hiragana_yo"
+            class="image-group"
+          />
+          <img
+            src="{% static 'images/hiragana_u.png' %}"
+            alt="hiragana_u"
+            class="image-group"
+          />
+          <img
+            src="{% static 'images/hiragana_ko.png' %}"
+            alt="hiragana_ko"
+            class="image-group"
+          />
+          <img
+            src="{% static 'images/hiragana_so.png' %}"
+            alt="hiragana_so"
+            class="image-group"
+          />
+        </span>
+      </div>
+      <div class="row mb-3">
+        <h4 style="font-family: Lucida Console">
+          Go to
+          <span style="font-weight: bold"
+            >Definitions -> Hiragana Definitions Table</span
+          >
+          to review the hiragana words
+        </h4>
+      </div>
+      <div class="row mb-3">
+        <span>
+          <img
+            src="{% static 'images/katakana_u.png' %}"
+            alt="katakana_u"
+            class="image-group"
+          />
+          <img
+            src="{% static 'images/katakana_e.png' %}"
+            alt="katakana_e"
+            class="image-group"
+          />
+          <img
+            src="{% static 'images/katakana_ru.png' %}"
+            alt="katakana_ru"
+            class="image-group"
+          />
+          <img
+            src="{% static 'images/katakana_ka.png' %}"
+            alt="katakana_ka"
+            class="image-group"
+          />
+          <img
+            src="{% static 'images/katakana_mu.png' %}"
+            alt="katakana_mu"
+            class="image-group"
+          />
+        </span>
+      </div>
+      <div class="row mb-3">
+        <h4 style="font-family: Lucida Console">
+          Go to
+          <span style="font-weight: bold"
+            >Definitions -> Katakana Definitions Table</span
+          >
+          to review the katakana words
+        </h4>
+      </div>
+      <div class="row mb-3">
+        <span>
+          <img
+            src="{% static 'images/kanji_welcome.png' %}"
+            alt="kanji_welcome"
+            class="image-group"
+          />
+        </span>
+      </div>
+      <div class="row mb-3">
+        <h4 style="font-family: Lucida Console">
+          Go to
+          <span style="font-weight: bold"
+            >Definitions -> Kanji Definitions Table</span
+          >
+          to review the kanji words
+        </h4>
+      </div>
+    </div>
+  </body>
+  <script>
+    {% bootstrap_javascript %}
+  </script>
 </html>
 {% endblock %}
