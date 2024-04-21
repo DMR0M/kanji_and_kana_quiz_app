@@ -7,9 +7,8 @@
         <title></title>
         {% load bootstrap5 %}
         {% bootstrap_css %}
-        {% bootstrap_javascript %}
-        <meta name="description" content="">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">    
         <link rel="stylesheet" href="{% static 'css/style.css' %}">
     </head>
     <body>
@@ -23,31 +22,37 @@
                 <li class="nav-item active">
                   <a class="nav-link" href="{% url 'home' %}">Home<span class="sr-only"></span></a>
                 </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="{% url 'kanji_list' %}">Kanji Definitions Table</a>
+                <li id="dropdown-nav" class="nav-item dropdown">
+                  <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    Definitions
+                  </a>
+                  <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <li><a class="dropdown-item" href="{% url 'kanji_list' %}">Kanji Definitions Table</a></li>
+                    <li><a class="dropdown-item" href="{% url 'hiragana_list' %}">Hiragana Definitions Table</a></li>
+                    <li><a class="dropdown-item" href="{% url 'katakana_list' %}">Katakana Definitions Table</a></li>
+                    <!--<li><hr class="dropdown-divider"></li>-->
+                  </ul>
                 </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="{% url 'hiragana_list' %}">Hiragana Definitions Table</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="{% url 'katakana_list' %}">Katakana Definitions Table</a>
-                </li>
+                <ul class="navbar-nav">
+                  <li id="dropdown-nav" class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                      Take the quiz
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                      <li><a class="dropdown-item" href="{% url 'kanji_quiz' %}">Kanji Quiz</a></li>
+                      <li><a class="dropdown-item" href="{% url 'hiragana_quiz' %}">Hiragana Quiz</a></li>
+                      <li><a class="dropdown-item" href="{% url 'katakana_quiz' %}">Katakana Quiz</a></li>
+                    </ul>
+                  </li>
                 <!--<li class="nav-item">
                   <a class="nav-link" href="{% url 'add_kanji_definition' %}">Add Kanji Definition</a>
                 </li>-->
-                <li class="nav-item">
-                  <a class="nav-link" href="{% url 'kanji_quiz' %}">Kanji Quiz</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="{% url 'hiragana_quiz' %}">Hiragana Quiz</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="{% url 'katakana_quiz' %}">Katakana Quiz</a>
-                </li>
               </ul>
             </div>
-
           </nav>
+        <script>
+          {% bootstrap_javascript %}
+        </script>
     </body>
 </html>
 {% block content %} {% endblock %}

@@ -5,14 +5,13 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         {% load bootstrap5 %}
         {% bootstrap_css %}
-        {% bootstrap_javascript %}
         <title>Your Total Score</title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="">
     </head>
     <body>
-        <div class="card position-absolute top-50 start-50 translate-middle" style="width: 25rem;text-align:center;">
+        <div class="card position-absolute top-50 start-50 translate-middle" style="width: 30rem;text-align:center;">
             <div class="card-body">
                 {% if score_list %}
                     <h5 class="card-subtitle mb-2 text-muted">Your Score Is: </h5>
@@ -27,5 +26,8 @@
                 {% endif %}
             </div>
           </div>
+          <script>
+            {% bootstrap_javascript %}
+          </script>
     </body>
 </html>
