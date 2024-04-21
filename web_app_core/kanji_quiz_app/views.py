@@ -48,10 +48,13 @@ def get_katakana_words(request):
 def get_kanji_quiz_data(request):
     # Get the number of question based on QuizSettings model
     latest_record = QuizSettings.objects.order_by('-id').first()
-    question_count = latest_record.quiz_kanji_question_count
+    if latest_record:
+        question_count = latest_record.quiz_kanji_question_count
     
-    # Get 10 kanji characters from the list and shuffle the order of the characters
-    kanji_list = util_generate_quiz_data("kanji", size=question_count)
+        # Get 10 kanji characters from the list and shuffle the order of the characters
+        kanji_list = util_generate_quiz_data("kanji", size=question_count)
+    else:
+        kanji_list = util_generate_quiz_data("kanji")
     
     context = {"randomize_kanji_list": kanji_list}
     
@@ -65,9 +68,11 @@ def get_kanji_quiz_data(request):
 def get_hiragana_quiz_data(request):
     # Get the number of question based on QuizSettings model
     latest_record = QuizSettings.objects.order_by('-id').first()
-    question_count = latest_record.quiz_hiragana_question_count
-    
-    hiragana_list = util_generate_quiz_data("hiragana", size=question_count)
+    if latest_record:
+        question_count = latest_record.quiz_hiragana_question_count
+        hiragana_list = util_generate_quiz_data("hiragana", size=question_count)
+    else:
+        hiragana_list = util_generate_quiz_data("hiragana")
     
     context = {"randomize_hiragana_list": hiragana_list}
     
@@ -78,10 +83,11 @@ def get_hiragana_quiz_data(request):
 def get_katakana_quiz_data(request):
     # Get the number of question based on QuizSettings model
     latest_record = QuizSettings.objects.order_by('-id').first()
-    question_count = latest_record.quiz_katakana_question_count
-    print(question_count)
-    
-    katakana_list = util_generate_quiz_data("katakana", size=question_count)
+    if latest_record:
+        question_count = latest_record.quiz_katakana_question_count
+        katakana_list = util_generate_quiz_data("katakana", size=question_count)
+    else:
+        katakana_list = util_generate_quiz_data("katakana")
     
     context = {"randomize_katakana_list": katakana_list}
     
