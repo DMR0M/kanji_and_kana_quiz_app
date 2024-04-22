@@ -19,7 +19,7 @@ VALUES
 	('ラーメン', 'ramen', 'ramen'),
 	('パン', 'pan', 'bread'),
 	('コーヒー', 'kohi', 'coffee'),
-	('コーラ', 'kola', 'cola'),
+	('コーラ', 'kora', 'cola'),
 	('ジュース', 'jusu', 'juice'),
 	('ビール', 'biru', 'beer'),
 	('スプーン', 'supun', 'spoon'),

@@ -1,0 +1,65 @@
+{% extends 'navbar.html' %}
+{% block content %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Basic Kanji Quiz</title>
+        {% load bootstrap5 %}
+        {% bootstrap_css %}
+        {% bootstrap_javascript %}
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="">
+    </head>
+    <body>
+        <h1 style="font-family: monospace, Monaco;padding:10px;">Define the Following Kanji Characters: </h1>
+        <!-- Get 10 random kanji characters for the quiz page -->
+        <form method="POST" action="{% url 'basic_kanji_submit_answers' %}">
+            <div style="margin-top:2rem;" class="container">
+                <div class="row">
+                    <div class="col-sm">
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon1">Name: </span>
+                            <input type="text" name="name_value" class="form-control" placeholder="Name of the quiz taker" aria-label="Username" aria-describedby="basic-addon1" required>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm">
+                        <h4>Kanji: </h4>
+                    </div>
+                    <div class="col-sm">
+                        <h4>Reading: </h4>
+                    </div>
+                    <div class="col-sm">
+                        <h4>Meaning: </h4>
+                    </div>
+                </div>
+                {% for kanji in randomize_kanji_list %}
+                    {% csrf_token %} 
+                    <div style="margin-top:0.5rem;" class="row">
+                        <div class="col-sm">
+                            <input type="text" readonly style="font-family:Lucida Console, Times New Roman;font-weight:bold;" 
+                            class="form-control" name="kanji_questions_{{forloop.counter}}" value={{kanji}}>
+                        </div>
+                        <div class="col-sm">
+                            <input type="text" name="reading_answer_{{forloop.counter}}" class="form-control" required>
+                        </div>
+                        <div class="col-sm">
+                            <input type="text" name="meaning_answer_{{forloop.counter}}" class="form-control" required>
+                        </div>
+                    </div>
+                {% endfor %}
+                <div class="col-sm">
+                    <button style="margin-top:4rem;" type="submit" class="btn btn-primary btn-sm">Submit Answers</button>
+                </div>
+            </div>
+        </form> 
+        <script>
+            {% bootstrap_javascript %}
+        </script>
+    </body>
+</html>
+{% endblock %}

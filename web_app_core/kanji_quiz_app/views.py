@@ -4,6 +4,7 @@ from django.contrib import messages
 
 from .models import (
     KanjiQuiz, 
+    BasicKanjiQuiz,
     HiraganaQuiz,
     KatakanaQuiz,
     Score, 
@@ -28,6 +29,13 @@ def get_kanji_words(request):
     kanji_list = KanjiQuiz.objects.order_by('id').all()
     context = {"kanji_list": kanji_list}
     return render(request, "listKanji.html", context)
+
+
+# Basic Kanji Master List Definition Page
+def get_basic_kanji_words(request):
+    basic_kanji_list = BasicKanjiQuiz.objects.order_by('id').all()
+    context = {"basic_kanji_list": basic_kanji_list}
+    return render(request, "listBasicKanji.html", context)
 
 
 # Hiragana Master List Definition Page
@@ -62,6 +70,26 @@ def get_kanji_quiz_data(request):
     render(request, "quizResults.html", context)
     
     return render(request, "quizPage.html", context)
+
+
+# Get Kanji Characters for Quiz Page
+def get_basic_kanji_quiz_data(request):
+    # Get the number of question based on QuizSettings model
+    latest_record = QuizSettings.objects.order_by('-id').first()
+    if latest_record:
+        question_count = latest_record.quiz_kanji_question_count
+    
+        # Get 10 kanji characters from the list and shuffle the order of the characters
+        kanji_list = util_generate_quiz_data("basic kanji", size=question_count)
+    else:
+        kanji_list = util_generate_quiz_data("basic kanji")
+    
+    context = {"randomize_kanji_list": kanji_list}
+    
+    # Send the randomized list of kanji characters to the quiz results page
+    render(request, "quizResults.html", context)
+    
+    return render(request, "basicKanjiQuizPage.html", context)
 
 
 # Get Hiragana Characters for Quiz Page
@@ -128,6 +156,7 @@ def answers_submit_view(request):
         correct_meaning_answers = util_get_correct_quiz_answers("Kanji", kanji_questions, "meaning")
         
         questionnaire = Questionnaire.objects.create(
+            quiz_name="Business Kanji Quiz",
             quiz_taker_name=quiz_taker_name,
         )
         
@@ -147,6 +176,58 @@ def answers_submit_view(request):
         
         
         return HttpResponseRedirect('/your_score')
+    
+    else:
+        return HttpResponse('Method not allowed')
+    
+
+# Handle Form Submission of Answers in Kanji Quiz Page
+def basic_kanji_answers_submit_view(request):
+    reading_answers = []
+    meaning_answers = []
+    kanji_questions = []
+    
+    if request.method == "POST":
+        quiz_taker_name = request.POST.get("name_value")
+        
+        for key, value in request.POST.items():
+            if key.startswith("reading_answer_"):
+                reading_answers.append(value)
+            elif key.startswith("meaning_answer_"):
+                meaning_answers.append(value)
+            elif key.startswith("kanji_questions_"):
+                kanji_questions.append(value)
+                
+        # Get the total score
+        total_score = util_get_quiz_score("basic kanji", reading_answers, meaning_answers, kanji_questions)
+        # Get the total question count
+        question_count = len(reading_answers) + len(meaning_answers)
+        # Get the correct reading answers
+        correct_reading_answers = util_get_correct_quiz_answers("basic kanji", kanji_questions, "reading")
+        # Get the correct meaning answers
+        correct_meaning_answers = util_get_correct_quiz_answers("basic kanji", kanji_questions, "meaning")
+        
+        questionnaire = Questionnaire.objects.create(
+            quiz_name="Basic Kanji Quiz",
+            quiz_taker_name=quiz_taker_name,
+        )
+        
+        question_and_answer_lookup = list(zip(correct_reading_answers, reading_answers, correct_meaning_answers, meaning_answers, kanji_questions))
+            
+        for c_reading, reading, c_meaning, meaning, kanji_character in question_and_answer_lookup:
+            QuestionnaireResults.objects.create(
+                kanji_character=kanji_character.casefold(),
+                correct_reading_answer=c_reading.casefold(),
+                reading_answer=reading.casefold().strip(),
+                correct_meaning_answer=c_meaning.casefold(),
+                meaning_answer=meaning.casefold().strip(),
+                questionnaire=questionnaire,
+            )
+        
+        Score.objects.create(total_score=total_score, question_count=question_count)
+        
+        
+        return HttpResponseRedirect('/your_score_basic_kanji_quiz')
     
     else:
         return HttpResponse('Method not allowed')
@@ -267,6 +348,13 @@ def score_view(request):
     score_list = Score.objects.last()
     context = {"score_list": score_list}
     return render(request, "scorePage.html", context)
+
+
+# Display score page with the user's score based on the quiz taken
+def basic_kanji_score_view(request):
+    score_list = Score.objects.last()
+    context = {"score_list": score_list}
+    return render(request, "basicKanjiScorePage.html", context)
 
 
 # Display score page with the user's score based on the quiz taken

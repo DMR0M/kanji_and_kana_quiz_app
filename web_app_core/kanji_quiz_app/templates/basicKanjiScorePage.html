@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        {% load bootstrap5 %}
+        {% bootstrap_css %}
+        {% bootstrap_javascript %}
+        <title>Your Total Score</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="">
+    </head>
+    <body>
+        <div class="card position-absolute top-50 start-50 translate-middle" style="width: 30rem;text-align:center;">
+            <div class="card-body">
+                {% if score_list %}
+                    <h5 class="card-subtitle mb-2 text-muted">Your Score Is: </h5>
+                    <h4 class="card-title">{{score_list.total_score}}</h4>
+                    <p class="card-text">Out of {{score_list.question_count}} questions!</p>
+                    <a href="{% url 'quiz_results' %}" class="card-link">See Results</a>
+                    <a href="{% url 'basic_kanji_quiz' %}" class="card-link">Take the quiz again</a>
+                    <a href="{% url 'basic_kanji_list' %}" class="card-link">Study Basic Kanji</a>  
+                {% else %}
+                    <p>No score recorded yet!</p>
+                    <a href="{% url 'basic_kanji_quiz' %}" class="card-link">Take the quiz now</a>
+                {% endif %}
+            </div>
+          </div>
+          <script></script>
+    </body>
+</html>

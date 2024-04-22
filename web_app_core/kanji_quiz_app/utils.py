@@ -1,6 +1,6 @@
 from random import shuffle, sample
 
-from .models import KanjiQuiz, HiraganaQuiz, KatakanaQuiz
+from .models import KanjiQuiz, BasicKanjiQuiz, HiraganaQuiz, KatakanaQuiz
 
 
 # Generates 10 random japanese words from database 
@@ -10,6 +10,9 @@ def util_generate_quiz_data(jap_lang, size=10) -> list[str]:
     
     if "kanji" == jap_lang.casefold():
         quiz_characters_list: list[tuple] = KanjiQuiz.objects.all().values_list("kanji_character", flat=True)
+        quiz_characters_list = sample(list(quiz_characters_list), size)
+    elif "basic kanji" == jap_lang.casefold():
+        quiz_characters_list: list[tuple] = BasicKanjiQuiz.objects.all().values_list("kanji_character", flat=True)
         quiz_characters_list = sample(list(quiz_characters_list), size)
     elif "hiragana" == jap_lang.casefold():
         quiz_characters_list: list[tuple] = HiraganaQuiz.objects.all().values_list("hiragana_character", flat=True)
@@ -43,6 +46,24 @@ def util_get_correct_quiz_answers(jap_lang, questions, answer_type) -> list[str]
                 result_set = KanjiQuiz.objects.filter(kanji_character=kanji)
                 
                 answers.append(result_set.first().meaning)
+                
+    elif "basic kanji" == jap_lang.casefold():
+        # Return an empty list if inputs are not of the expected types
+        if not isinstance(questions, list) or not isinstance(answer_type, str):
+            return answers  
+        
+        if "reading" == answer_type.casefold():
+            for kanji in questions:
+                result_set = BasicKanjiQuiz.objects.filter(kanji_character=kanji)
+
+                answers.append(result_set.first().reading)
+                
+        elif "meaning" == answer_type.casefold():
+            for kanji in questions:
+                result_set = BasicKanjiQuiz.objects.filter(kanji_character=kanji)
+                
+                answers.append(result_set.first().meaning)
+                
                 
     elif "hiragana" == jap_lang.casefold():
         # Return an empty list if inputs are not of the expected types
@@ -99,18 +120,37 @@ def util_get_quiz_score(jap_lang, reading_answers, meaning_answers, questions) -
         reading_lookup = dict(correct_answers_reading)
         meaning_lookup = dict(correct_answers_meaning)
         
-        for meaning in meaning_lookup:
-            meaning_lookup[meaning] = list(map(lambda x: x.replace(" ", ""), meaning_lookup[meaning].split(";")))
-        
         for data in zip(questions, reading_answers, meaning_answers):
                 kanji = data[0]         # kanji_questions_value
                 read_ans = data[1]      # reading_answers_value
                 mean_ans = data[2]      # meaning_answer_value
                 
-                if reading_lookup[kanji] == read_ans.replace(" ", ""):
+                if reading_lookup.get(kanji, "").casefold().strip() == read_ans.strip():
                     total_score += 1
                     
-                if mean_ans.replace(" ", "") in meaning_lookup[kanji]:
+                if meaning_lookup.get(kanji, "").casefold().strip() == mean_ans.strip():
+                    total_score += 1
+    
+    elif "basic kanji" == jap_lang.casefold():
+        correct_answers_reading: list[tuple] = BasicKanjiQuiz.objects.all().values_list(
+            "kanji_character", "reading"
+        )
+        correct_answers_meaning: list[tuple] = BasicKanjiQuiz.objects.all().values_list(
+            "kanji_character", "meaning"
+        )
+    
+        reading_lookup = dict(correct_answers_reading)
+        meaning_lookup = dict(correct_answers_meaning)
+        
+        for data in zip(questions, reading_answers, meaning_answers):
+                basic_kanji = data[0]         # kanji_questions_value
+                read_ans = data[1]      # reading_answers_value
+                mean_ans = data[2]      # meaning_answer_value
+                
+                if reading_lookup.get(basic_kanji, "").casefold().strip() == read_ans.strip():
+                    total_score += 1
+                    
+                if meaning_lookup.get(basic_kanji, "").casefold().strip() == mean_ans.strip():
                     total_score += 1
                     
     elif "hiragana" == jap_lang.casefold():
@@ -124,18 +164,15 @@ def util_get_quiz_score(jap_lang, reading_answers, meaning_answers, questions) -
         reading_lookup = dict(correct_answers_reading)
         meaning_lookup = dict(correct_answers_meaning)
         
-        for meaning in meaning_lookup:
-            meaning_lookup[meaning] = list(map(lambda x: x.replace(" ", ""), meaning_lookup[meaning].split(";")))
-        
         for data in zip(questions, reading_answers, meaning_answers):
                 hiragana = data[0]         # hiragana_questions_value
                 read_ans = data[1]      # reading_answers_value
                 mean_ans = data[2]      # meaning_answer_value
                 
-                if reading_lookup[hiragana] == read_ans.replace(" ", ""):
+                if reading_lookup.get(hiragana, "").casefold().strip() == read_ans.strip():
                     total_score += 1
                     
-                if mean_ans.replace(" ", "") in meaning_lookup[hiragana]:
+                if meaning_lookup.get(hiragana, "").casefold().strip() == mean_ans.strip():
                     total_score += 1
     
     elif "katakana" == jap_lang.casefold():
@@ -149,18 +186,23 @@ def util_get_quiz_score(jap_lang, reading_answers, meaning_answers, questions) -
         reading_lookup = dict(correct_answers_reading)
         meaning_lookup = dict(correct_answers_meaning)
         
-        for meaning in meaning_lookup:
-            meaning_lookup[meaning] = list(map(lambda x: x.replace(" ", ""), meaning_lookup[meaning].split(";")))
+        print(reading_lookup)
+        print(meaning_lookup)
         
         for data in zip(questions, reading_answers, meaning_answers):
                 katakana = data[0]         # katakana_questions_value
                 read_ans = data[1]      # reading_answers_value
                 mean_ans = data[2]      # meaning_answer_value
                 
-                if reading_lookup[katakana] == read_ans.replace(" ", ""):
+                print(f"{reading_lookup[katakana]}->{read_ans}")
+                print(f"{meaning_lookup[katakana]}->{mean_ans}")
+                
+                if reading_lookup.get(katakana, "").casefold().strip() == read_ans.strip():
+                    print(f"Correct! {read_ans}")
                     total_score += 1
-                    
-                if mean_ans.replace(" ", "") in meaning_lookup[katakana]:
+                 
+                if meaning_lookup.get(katakana, "").casefold().strip() == mean_ans.strip():
+                    print(f"Correct! {mean_ans}")
                     total_score += 1
     
     return total_score
