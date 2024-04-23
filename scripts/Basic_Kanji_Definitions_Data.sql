@@ -13,7 +13,7 @@ VALUES
     ('百', 'ひゃく', 'hyaku', 'hundred'),
     ('円', 'えん', 'en', 'yen'),
     ('何', 'なに', 'nani', 'what'),
-    ('本', 'もと', 'moto', 'book'),
+    ('本', 'もと', 'moto', 'origin'),
     ('人', 'ひと', 'hito', 'person'),
     ('男', 'おとこ', 'otoko', 'male'),
     ('女', 'おんな', 'onna', 'female'),

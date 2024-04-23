@@ -19,5 +19,10 @@ VALUES
     ('登録', 'とうろく', 'touroku', 'registration'),
     ('取込', 'とりこみ', 'torikomi', 'capture'),
     ('追加', 'ついか', 'tsuika', 'addition'),
-    ('処理', 'しょり', 'shori', 'process');
+    ('処理', 'しょり', 'shori', 'process'),
+    ('独自', 'どくじ', 'dokuji', 'unique'),
+    ('項目', 'こうもく', 'koumoku', 'item'),
+    ('受診', 'じゅしん', 'jushin', 'consultation'),
+    ('前提', 'ぜんてい', 'zentei', 'prerequisite')
+    ('条件', 'じょうけん', 'jouken', 'condition');
     
