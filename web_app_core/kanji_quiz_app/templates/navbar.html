@@ -37,7 +37,7 @@
                 <ul class="navbar-nav">
                   <li id="dropdown-nav" class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                      Take the quiz
+                      Take the Quiz
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                       <li><a class="dropdown-item" href="{% url 'basic_kanji_quiz' %}">Basic Kanji Quiz</a></li>
@@ -48,6 +48,15 @@
                       <li><a class="dropdown-item" href="{% url 'quiz_settings' %}">Settings</a></li>
                     </ul>
                   </li>
+                  <ul class="navbar-nav">
+                    <li id="dropdown-nav" class="nav-item dropdown">
+                      <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Guess the Character Game
+                      </a>
+                      <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <li><a class="dropdown-item" href="{% url 'guessing_kanji_quiz' %}">Guess the Business Kanji Character</a></li>
+                      </ul>
+                    </li>
                 <!--<li class="nav-item">
                   <a class="nav-link" href="{% url 'add_kanji_definition' %}">Add Kanji Definition</a>
                 </li>-->

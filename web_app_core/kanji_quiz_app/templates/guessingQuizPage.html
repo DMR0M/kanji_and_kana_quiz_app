@@ -1,0 +1,148 @@
+{% extends 'navbar.html' %}
+{% block content %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        {% load bootstrap5 %}
+        {% bootstrap_css %}
+        {% bootstrap_javascript %}
+        <title>Your Total Score</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="">
+    </head>
+    <style>
+        h1, h2 {
+            font-family: Verdana;
+        }
+        .card-body > * {
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+        }
+    </style>
+    <body>
+        <div style="padding:10px; position-absolute top-0 start-50 translate-middle-x">
+            <h1 style="font-family: Verdana; margin-bottom: 0.5rem">
+              Guess the Meaning of the Business Kanji Character 
+            </h1>
+        </div>
+        {% for data in guess_list %}
+            <input type="hidden" class="guess-values" name="fieldname" value={{ data }}>
+        {% endfor %}
+        {% for data in correct_answers_list %}
+            <input type="hidden" class="correct-answer-values" name="fieldname" value={{ data }}>
+        {% endfor %}
+            <div class="card position-absolute top-50 start-50 translate-middle" style="width: 30rem;text-align:center;">          
+                <div class="card-body">
+                    <h2 id="isCorrectBadge"><span class="badge bg-success">Correct!</h2>
+                    <h2 id="isWrongBadge"><span class="badge bg-danger">Incorrect</h2>
+                    <div class="progress">
+                        <div id="progress-bar" class="progress-bar bg-secondary" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="110"></div>
+                    </div>
+                    <h1 id="character-field"></h1>
+                    <input class="form-control" list="datalistOptions" id="answer-field" placeholder="Meaning Answer" value="" required>
+                    <button id="submit-answers-btn" type="button" class="btn btn-dark" onclick="handleSubmitAnswer()">Submit Answer</button> 
+                </div>
+            </div>
+        <script>
+            let questionCounter = 0;
+            let guessValues = [];
+            let correctAnswerValues = [];
+            let answersList = [];
+            const characterValue = document.getElementById("character-field");
+            let currAnswerValue = document.getElementById("answer-field").value;
+            const progressBar = document.getElementById("progress-bar");
+            const submitAnswersButton = document.getElementById("submit-answers-btn");
+
+            let isCorrectBadge = document.getElementById("isCorrectBadge");
+            let isWrongBadge = document.getElementById("isWrongBadge");
+
+            let progressValue = 0;
+            let score = 0;
+
+            document.addEventListener('DOMContentLoaded', function() {
+                var submitButton = document.getElementById('submit-answers-btn');
+                var textInput = document.getElementById('answer-field');
+            
+                // Function to handle key press event
+                function handleKeyPress(event) {
+                    // Check if the Enter key is pressed (keyCode 13)
+                    if (event.keyCode === 13) {
+                        // Programmatically click the submit button
+                        submitButton.click();
+                    }
+                }
+            
+                // Add event listener for key press event on text input
+                textInput.addEventListener('keydown', handleKeyPress);
+            });
+            
+            window.onload = () => {
+                let guessCharacters = document.getElementsByClassName("guess-values");
+                let correctAnswers = document.getElementsByClassName("correct-answer-values");
+
+                isCorrectBadge.style.display = "none";
+                isWrongBadge.style.display = "none";
+
+                for (let guessVal of guessCharacters) {
+                    guessValues.push(guessVal.value);
+                }
+
+                for (let correctAnswerVal of correctAnswers) {
+                    correctAnswerValues.push(correctAnswerVal.value)
+                }
+
+                console.log(guessValues);
+                console.log(correctAnswerValues);
+                progressBar.innerText = progressValue + '%';
+                characterValue.innerText = guessValues[questionCounter]
+            };
+
+            const handleSubmitAnswer = () => {
+                currAnswerValue = document.getElementById("answer-field").value;
+
+                if (submitAnswersButton.innerText == "See Results") {
+                    window.location.href = "/kanji_list";
+                }
+
+                if (questionCounter == 9) {
+                    submitAnswersButton.innerText = "See Results";
+                }
+
+                if (questionCounter < 9) {
+                    questionCounter++;
+                    characterValue.innerText = guessValues[questionCounter]
+                    
+                    currAnswerValue = document.getElementById("answer-field").value;
+                    answersList.push(currAnswerValue);
+
+                    progressValue += 10;
+                    progressBar.style.width = progressValue + '%';
+                    progressBar.setAttribute('aria-valuenow', progressValue);
+                    progressBar.innerText = progressValue + '%';
+                    evaluateAnswer(currAnswerValue);
+                    console.log(score);
+                    document.getElementById("answer-field").value = "";
+                }
+                console.log(answersList)
+               
+            }
+
+            const evaluateAnswer = (answer) => {
+                console.log(answer);
+                console.log(correctAnswerValues[questionCounter])
+                if (answer.toLowerCase() === correctAnswerValues[questionCounter-1]) {
+                    score++;
+                    isCorrectBadge.style.display = '';
+                    isWrongBadge.style.display = 'none'; 
+                } else {
+                    isCorrectBadge.style.display = 'none'; 
+                    isWrongBadge.style.display = ''; 
+                }
+            }
+        </script>
+    </body>
+</html>
+{% endblock %}

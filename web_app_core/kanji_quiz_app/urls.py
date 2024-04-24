@@ -25,4 +25,5 @@ urlpatterns = [
     path('your_score_katakana_quiz', views.katakana_score_view, name='your_score_katakana_quiz'),
     path('quiz_results', views.quiz_results_view, name='quiz_results'),
     path('quiz_settings', views.quiz_settings_view, name='quiz_settings'),
+    path('guessing_kanji_quiz', views.guess_kanji_word_view, name="guessing_kanji_quiz"),
 ]

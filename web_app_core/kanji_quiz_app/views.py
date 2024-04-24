@@ -447,3 +447,18 @@ def quiz_settings_view(request):
         context = {"message": "Successfully updated word count in quizzes!"}
     
     return render(request, "settings.html", context)
+
+
+def guess_kanji_word_view(request):
+    quiz_data = util_generate_quiz_data("kanji")
+    correct_meaning_answers = util_get_correct_quiz_answers("kanji", quiz_data, "meaning")
+    
+    # quiz_data = util_generate_quiz_data("basic kanji")
+    # correct_meaning_answers = util_get_correct_quiz_answers("basic kanji", quiz_data, "meaning")
+    
+    context = { 
+        "guess_list": quiz_data,
+        "correct_answers_list": correct_meaning_answers,
+    }
+    
+    return render(request, "guessingQuizPage.html", context)
