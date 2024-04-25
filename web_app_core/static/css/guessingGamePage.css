@@ -1,0 +1,9 @@
+h1,
+h2 {
+    font-family: Verdana;
+}
+
+.card-body>* {
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+}
