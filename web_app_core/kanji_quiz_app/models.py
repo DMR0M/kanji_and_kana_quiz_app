@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils import timezone
+from enum import Enum
 
 
 # Kanji Definition Model
@@ -74,10 +75,31 @@ class QuestionnaireResults(models.Model):
     
     def __str__(self):
         return f"Questions and Answers {str(self.date_answered)}"
-
+    
 
 class QuizSettings(models.Model):
     quiz_hiragana_question_count = models.IntegerField()
     quiz_katakana_question_count = models.IntegerField()
     quiz_kanji_question_count = models.IntegerField()
     date_modified = models.DateField(default=timezone.now)
+    
+
+class GuessGameQuestionnaireOptions(Enum):
+    BASIC_KANJI_QUESTIONNAIRE = "basic kanji"
+    BUSINESS_KANJI_QUESTIONNAIRE = "kanji"
+    HIRAGANA_QUESTIONNAIRE = "hiragana"
+    KATAKANA_QUESTIONNAIRE = "katakana"
+
+
+class GuessGameSettings(models.Model):
+    guess_game_questionnaire = models.CharField(
+        max_length=100, 
+        choices=[
+            (options.name, options.value)
+            for options in GuessGameQuestionnaireOptions
+        ], 
+    default=GuessGameQuestionnaireOptions.BUSINESS_KANJI_QUESTIONNAIRE.value)
+    
+    guess_game_question_count = models.IntegerField(default=10)
+    date_modified = models.DateField(default=timezone.now)
+    

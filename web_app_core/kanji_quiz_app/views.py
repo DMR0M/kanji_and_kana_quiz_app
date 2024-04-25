@@ -11,6 +11,7 @@ from .models import (
     Questionnaire, 
     QuestionnaireResults,
     QuizSettings,
+    GuessGameSettings,
 )
 from .forms import AddKanjiDefinitionForm
 from .utils import (
@@ -444,21 +445,73 @@ def quiz_settings_view(request):
             quiz_kanji_question_count=int(kanji_question_count),
         )
         
-        context = {"message": "Successfully updated word count in quizzes!"}
+        context = {"message": "Successfully updated quizzes!"}
     
     return render(request, "settings.html", context)
 
 
-def guess_kanji_word_view(request):
-    quiz_data = util_generate_quiz_data("kanji")
-    correct_reading_answers = util_get_correct_quiz_answers("kanji", quiz_data, "reading")
-    correct_meaning_answers = util_get_correct_quiz_answers("kanji", quiz_data, "meaning")
+def guessing_game_settings_view(request):
+    context = {}
     
-    # quiz_data = util_generate_quiz_data("basic kanji")
-    # correct_meaning_answers = util_get_correct_quiz_answers("basic kanji", quiz_data, "meaning")
+    if request.method == "POST":
+        guess_game_questionnaire = request.POST.get("guess-game-questionnaire")
+        guess_game_character_count = request.POST.get("character-count")
+        
+        GuessGameSettings.objects.create(
+            guess_game_questionnaire=guess_game_questionnaire,
+            guess_game_question_count=int(guess_game_character_count),
+        )
+
+        context = {"message": "Successfully updated guess the character game!"}
+    
+    return render(request, "guessGameSettings.html", context)
+
+
+def guess_kanji_word_view(request):
+    # Dynamically set guessing game questionnaire depending on the latest GuessGameSettings record
+    # Get the number of guessing game characters based on the latest GuessGameSettings record
+    latest_record = GuessGameSettings.objects.order_by('-id').first()
+    print(latest_record)
+    if latest_record:
+        questionnaire_selection = latest_record.guess_game_questionnaire
+        question_count = latest_record.guess_game_question_count
+        
+        # Temporary rename the value of 'business kanji' to 'kanji'
+        # For utility function purposes
+        if "business kanji" in questionnaire_selection.casefold():
+            questionnaire_selection = "kanji"
+
+        print(questionnaire_selection)
+        print(question_count)
+    
+        guess_game_character_list = util_generate_quiz_data(
+            questionnaire_selection.casefold(), 
+            size=question_count
+        )
+        correct_reading_answers = util_get_correct_quiz_answers(
+            questionnaire_selection.casefold(), guess_game_character_list, 
+            "reading"
+        )
+        correct_meaning_answers = util_get_correct_quiz_answers(
+            questionnaire_selection.casefold(), guess_game_character_list, 
+            "meaning"
+        )
+    # If no record exist in GuessGameSettings model
+    else:
+        guess_game_character_list = util_generate_quiz_data("kanji")
+        correct_reading_answers = util_get_correct_quiz_answers(
+            questionnaire_selection.casefold(), guess_game_character_list, 
+            "reading"
+        )
+        correct_meaning_answers = util_get_correct_quiz_answers(
+            questionnaire_selection.casefold(), guess_game_character_list, 
+            "meaning"
+        )
     
     context = { 
-        "guess_list": quiz_data,
+        "questionnaire_selection": questionnaire_selection.title(),
+        "guess_list_count": len(guess_game_character_list),
+        "guess_list": guess_game_character_list,
         "correct_reading_answers_list": correct_reading_answers,
         "correct_meaning_answers_list" : correct_meaning_answers,
     }
