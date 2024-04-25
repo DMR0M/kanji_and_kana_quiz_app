@@ -451,6 +451,7 @@ def quiz_settings_view(request):
 
 def guess_kanji_word_view(request):
     quiz_data = util_generate_quiz_data("kanji")
+    correct_reading_answers = util_get_correct_quiz_answers("kanji", quiz_data, "reading")
     correct_meaning_answers = util_get_correct_quiz_answers("kanji", quiz_data, "meaning")
     
     # quiz_data = util_generate_quiz_data("basic kanji")
@@ -458,7 +459,8 @@ def guess_kanji_word_view(request):
     
     context = { 
         "guess_list": quiz_data,
-        "correct_answers_list": correct_meaning_answers,
+        "correct_reading_answers_list": correct_reading_answers,
+        "correct_meaning_answers_list" : correct_meaning_answers,
     }
     
     return render(request, "guessingQuizPage.html", context)

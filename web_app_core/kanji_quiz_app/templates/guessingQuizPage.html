@@ -31,8 +31,11 @@
         {% for data in guess_list %}
             <input type="hidden" class="guess-values" name="fieldname" value={{ data }}>
         {% endfor %}
-        {% for data in correct_answers_list %}
-            <input type="hidden" class="correct-answer-values" name="fieldname" value={{ data }}>
+        {% for data in correct_reading_answers_list %}
+            <input type="hidden" class="correct-reading-answer-values" name="fieldname" value={{ data }}>
+        {% endfor %}
+        {% for data in correct_meaning_answers_list %}
+            <input type="hidden" class="correct-meaning-answer-values" name="fieldname" value={{ data }}>
         {% endfor %}
             <div class="card position-absolute top-50 start-50 translate-middle" style="width: 30rem;text-align:center;">          
                 <div class="card-body">
@@ -42,19 +45,30 @@
                         <div id="progress-bar" class="progress-bar bg-secondary" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="110"></div>
                     </div>
                     <h1 id="character-field"></h1>
-                    <input class="form-control" list="datalistOptions" id="answer-field" placeholder="Meaning Answer" value="" required>
+                    <input class="form-control" list="datalistOptions" id="answer-field1" placeholder="Reading Answer" value="" required>
+                    <input class="form-control" list="datalistOptions" id="answer-field2" placeholder="Meaning Answer" value="" required>
+                    <button id="play-again-btn" type="button" class="btn btn-dark" onclick="playAgain()">Play Again</button> 
                     <button id="submit-answers-btn" type="button" class="btn btn-dark" onclick="handleSubmitAnswer()">Submit Answer</button> 
                 </div>
             </div>
         <script>
             let questionCounter = 0;
             let guessValues = [];
-            let correctAnswerValues = [];
-            let answersList = [];
+            let correctReadingAnswerValues = [];
+            let correctMeaningAnswerValues = [];
+            let answersList1 = [];
+            let answersList2 = [];
             const characterValue = document.getElementById("character-field");
-            let currAnswerValue = document.getElementById("answer-field").value;
+
+            let currAnswerValue1 = document.getElementById("answer-field1").value;
+            const answerField1 = document.getElementById("answer-field1");
+
+            let currAnswerValue2 = document.getElementById("answer-field2").value;
+            const answerField2 = document.getElementById("answer-field2");
+
             const progressBar = document.getElementById("progress-bar");
             const submitAnswersButton = document.getElementById("submit-answers-btn");
+            const playAgainButton = document.getElementById("play-again-btn");
 
             let isCorrectBadge = document.getElementById("isCorrectBadge");
             let isWrongBadge = document.getElementById("isWrongBadge");
@@ -64,76 +78,90 @@
 
             document.addEventListener('DOMContentLoaded', function() {
                 var submitButton = document.getElementById('submit-answers-btn');
-                var textInput = document.getElementById('answer-field');
+                var textInput1 = document.getElementById('answer-field1');
+                var textInput2 = document.getElementById('answer-field2');
             
-                // Function to handle key press event
                 function handleKeyPress(event) {
-                    // Check if the Enter key is pressed (keyCode 13)
                     if (event.keyCode === 13) {
-                        // Programmatically click the submit button
                         submitButton.click();
                     }
                 }
             
-                // Add event listener for key press event on text input
-                textInput.addEventListener('keydown', handleKeyPress);
+                textInput1.addEventListener('keydown', handleKeyPress);
+                textInput2.addEventListener('keydown', handleKeyPress);
             });
             
             window.onload = () => {
                 let guessCharacters = document.getElementsByClassName("guess-values");
-                let correctAnswers = document.getElementsByClassName("correct-answer-values");
+                let correctReadingAnswers = document.getElementsByClassName("correct-reading-answer-values");
+                let correctMeaningAnswers = document.getElementsByClassName("correct-meaning-answer-values");
 
                 isCorrectBadge.style.display = "none";
                 isWrongBadge.style.display = "none";
+                playAgainButton.style.display = "none";
 
                 for (let guessVal of guessCharacters) {
                     guessValues.push(guessVal.value);
                 }
 
-                for (let correctAnswerVal of correctAnswers) {
-                    correctAnswerValues.push(correctAnswerVal.value)
+                for (let correctAnswerVal of correctReadingAnswers) {
+                    correctReadingAnswerValues.push(correctAnswerVal.value)
+                }
+
+                for (let correctAnswerVal of correctMeaningAnswers) {
+                    correctMeaningAnswerValues.push(correctAnswerVal.value)
                 }
 
                 console.log(guessValues);
-                console.log(correctAnswerValues);
+                console.log(correctReadingAnswerValues);
+                console.log(correctMeaningAnswerValues);
                 progressBar.innerText = progressValue + '%';
                 characterValue.innerText = guessValues[questionCounter]
             };
 
             const handleSubmitAnswer = () => {
-                currAnswerValue = document.getElementById("answer-field").value;
-
-                if (submitAnswersButton.innerText == "See Results") {
+                if (submitAnswersButton.innerText == "Review Kanji Definition") {
                     window.location.href = "/kanji_list";
                 }
 
                 if (questionCounter == 9) {
-                    submitAnswersButton.innerText = "See Results";
+                    submitAnswersButton.innerText = "Review Kanji Definition";
+                    answerField1.style.display = "none";
+                    answerField2.style.display = "none";
+                    playAgainButton.style.display = "";
                 }
 
-                if (questionCounter < 9) {
+                if (questionCounter < 10) {
                     questionCounter++;
-                    characterValue.innerText = guessValues[questionCounter]
                     
-                    currAnswerValue = document.getElementById("answer-field").value;
-                    answersList.push(currAnswerValue);
+                    currAnswerValue1 = document.getElementById("answer-field1").value;
+                    currAnswerValue2 = document.getElementById("answer-field2").value;
+                    answersList1.push(currAnswerValue1);
+                    answersList2.push(currAnswerValue2);
+
+                    evaluateAnswer(currAnswerValue1, currAnswerValue2);
 
                     progressValue += 10;
                     progressBar.style.width = progressValue + '%';
                     progressBar.setAttribute('aria-valuenow', progressValue);
                     progressBar.innerText = progressValue + '%';
-                    evaluateAnswer(currAnswerValue);
+                    
                     console.log(score);
-                    document.getElementById("answer-field").value = "";
+                    document.getElementById("answer-field1").value = "";
+                    document.getElementById("answer-field2").value = "";
+                    characterValue.innerText = questionCounter < 10 ? guessValues[questionCounter] : `${score}/${guessValues.length}`;
                 }
-                console.log(answersList)
+                console.log(answersList1)
+                console.log(answersList2)
                
             }
 
-            const evaluateAnswer = (answer) => {
-                console.log(answer);
-                console.log(correctAnswerValues[questionCounter])
-                if (answer.toLowerCase() === correctAnswerValues[questionCounter-1]) {
+            const evaluateAnswer = (readingAnswer, meaningAnswer) => {
+                console.log(readingAnswer);
+                console.log(meaningAnswer);
+                console.log(correctReadingAnswerValues[questionCounter])
+                if (readingAnswer.toLowerCase() === correctReadingAnswerValues[questionCounter-1]
+                    && meaningAnswer.toLowerCase() === correctMeaningAnswerValues[questionCounter-1]) {
                     score++;
                     isCorrectBadge.style.display = '';
                     isWrongBadge.style.display = 'none'; 
@@ -141,6 +169,10 @@
                     isCorrectBadge.style.display = 'none'; 
                     isWrongBadge.style.display = ''; 
                 }
+            }
+
+            const playAgain = () => {
+                window.location.reload();
             }
         </script>
     </body>
