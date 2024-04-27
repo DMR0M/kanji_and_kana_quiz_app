@@ -26,5 +26,5 @@ urlpatterns = [
     path('quiz_results', views.quiz_results_view, name='quiz_results'),
     path('quiz_settings', views.quiz_settings_view, name='quiz_settings'),
     path('guessing_game_settings', views.guessing_game_settings_view, name='guessing_game_settings'),
-    path('guessing_kanji_quiz', views.guess_kanji_word_view, name="guessing_kanji_quiz"),
+    path('guessing_game', views.guess_kanji_word_view, name="guessing_game"),
 ]
