@@ -497,7 +497,9 @@ def guess_kanji_word_view(request):
             "meaning"
         )
     # If no record exist in GuessGameSettings model
+    # Default to Business Kanji Questionnaire
     else:
+        questionnaire_selection = "Kanji"
         guess_game_character_list = util_generate_quiz_data("kanji")
         correct_reading_answers = util_get_correct_quiz_answers(
             questionnaire_selection.casefold(), guess_game_character_list, 
